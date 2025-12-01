@@ -290,13 +290,17 @@
         
         .profile-container:hover { transform: scale(1.08); }
         
-        .profile-container:hover .profile-ring { border-width: 5px; animation: rotate 5s linear infinite, ringGlow 2s ease-in-out infinite; }
+        .profile-container:hover .profile-ring { border-width: 5px; animation: rotateRing 2s linear infinite, ringGlow 2s ease-in-out infinite; }
         
         .profile-container:hover .profile-pic { animation: profileGlow 2s ease-in-out infinite; }
 
-        .profile-ring { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 100%; height: 100%; border: 3px solid transparent; border-radius: 50%; background: linear-gradient(135deg, #87ceeb, #00bfff, #4169e1) border-box; animation: rotate 10s linear infinite, ringGlow 4s ease-in-out infinite; transition: all 0.4s ease; }
+        .profile-ring { position: absolute; top: 50%; left: 50%; width: 100%; height: 100%; border-radius: 50%; animation: rotateRing 4s linear infinite; }
+        
+        .profile-ring::before { content: ''; position: absolute; inset: 0; border-radius: 50%; padding: 3px; background: linear-gradient(135deg, #87ceeb, #00bfff, #4169e1, #87ceeb); -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; }
+        
+        .profile-ring::after { content: ''; position: absolute; inset: -8px; border-radius: 50%; background: conic-gradient(from 0deg, transparent, transparent 70%, #87ceeb 85%, #00bfff 92%, #4169e1 96%, transparent); opacity: 0.8; filter: blur(8px); }
 
-        @keyframes rotate { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
+        @keyframes rotateRing { from { transform: translate(-50%, -50%) rotate(0deg); } to { transform: translate(-50%, -50%) rotate(360deg); } }
         
         @keyframes profileGlow { 
             0%, 100% { box-shadow: 0 0 20px rgba(135,206,250,0.3), 0 0 40px rgba(135,206,250,0.2); }
@@ -433,53 +437,101 @@
         
         @keyframes shimmer { 0% { transform: translateX(-100%); } 100% { transform: translateX(100%); } }
 
-        footer { background: linear-gradient(180deg, rgba(10,14,39,0.95) 0%, rgba(5,7,20,0.98) 100%); padding: 5rem 5% 2rem; position:relative; z-index:1; border-top: 2px solid rgba(135, 206, 250, 0.2); }
+        footer { background: linear-gradient(180deg, rgba(10,14,39,0.95) 0%, rgba(5,7,20,0.98) 100%); padding: 5rem 5% 2rem; position:relative; z-index:1; border-top: 2px solid rgba(135, 206, 250, 0.2); transform-style: preserve-3d; perspective: 1000px; overflow: hidden; }
         
-        footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, #87ceeb, transparent); }
+        footer::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, #87ceeb, transparent); animation: borderGlow 3s ease-in-out infinite; }
         
-        .footer-content { max-width: 1400px; margin: 0 auto; }
+        footer::after { content: ''; position: absolute; top: -50%; left: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(135, 206, 250, 0.1) 0%, transparent 70%); animation: footerGlow 8s ease-in-out infinite; pointer-events: none; transform: translateZ(-50px); }
+        
+        @keyframes borderGlow { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; box-shadow: 0 0 20px rgba(135, 206, 250, 0.5); } }
+        
+        @keyframes footerGlow { 0%, 100% { transform: translateZ(-50px) translate(-50%, -50%) scale(1); opacity: 0.3; } 50% { transform: translateZ(-50px) translate(-30%, -30%) scale(1.2); opacity: 0.6; } }
+        
+        .footer-content { max-width: 1400px; margin: 0 auto; position: relative; }
+        
+        .footer-content::before { content: ''; position: absolute; width: 300px; height: 300px; background: radial-gradient(circle, rgba(135, 206, 250, 0.15), transparent); border-radius: 50%; top: 10%; left: 10%; animation: floatParticle1 6s ease-in-out infinite; pointer-events: none; z-index: 0; }
+        
+        .footer-content::after { content: ''; position: absolute; width: 200px; height: 200px; background: radial-gradient(circle, rgba(0, 191, 255, 0.1), transparent); border-radius: 50%; bottom: 20%; right: 15%; animation: floatParticle2 7s ease-in-out infinite; pointer-events: none; z-index: 0; }
+        
+        @keyframes floatParticle1 { 0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.3; } 50% { transform: translate(30px, -30px) scale(1.3); opacity: 0.6; } }
+        
+        @keyframes floatParticle2 { 0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.2; } 50% { transform: translate(-40px, 25px) scale(1.4); opacity: 0.5; } }
 
-        .footer-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 3rem; margin-bottom: 3rem; }
+        .footer-grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(280px,1fr)); gap: 3rem; margin-bottom: 3rem; position: relative; z-index: 2; transform-style: preserve-3d; }
         
-        .footer-section { animation: fadeInUp 0.8s ease forwards; opacity: 0; transition: transform 0.3s ease; }
+        .footer-section { animation: fadeInUp3D 0.8s ease forwards; opacity: 0; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); transform-style: preserve-3d; position: relative; }
         
         .footer-section:nth-child(1) { animation-delay: 0.1s; }
         .footer-section:nth-child(2) { animation-delay: 0.2s; }
         .footer-section:nth-child(3) { animation-delay: 0.3s; }
         
-        .footer-section:hover { transform: translateY(-5px); }
+        @keyframes fadeInUp3D { from { opacity: 0; transform: translateY(50px) translateZ(-100px) rotateX(20deg); } to { opacity: 1; transform: translateY(0) translateZ(0) rotateX(0); } }
         
-        .footer-section h3 { color: #87ceeb; font-size: 1.4rem; margin-bottom: 1.5rem; font-weight: 600; position: relative; padding-bottom: 0.8rem; transition: all 0.3s ease; cursor: default; }
+        .footer-section:hover { transform: translateY(-15px) translateZ(30px) rotateX(5deg) scale(1.02); }
         
-        .footer-section h3::after { content: ''; position: absolute; bottom: 0; left: 0; width: 50px; height: 3px; background: linear-gradient(90deg, #87ceeb, #00bfff); border-radius: 2px; transition: width 0.3s ease; }
+        .footer-section h3 { color: #87ceeb; font-size: 1.4rem; margin-bottom: 1.5rem; font-weight: 600; position: relative; padding-bottom: 0.8rem; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); cursor: default; transform-style: preserve-3d; text-shadow: 0 2px 8px rgba(135, 206, 250, 0.15); }
         
-        .footer-section h3:hover::after { width: 100px; }
+        .footer-section h3::after { content: ''; position: absolute; bottom: 0; left: 0; width: 50px; height: 3px; background: linear-gradient(90deg, #87ceeb, #00bfff); border-radius: 2px; transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
         
-        .footer-section h3:hover { color: #00bfff; }
+        .footer-section h3:hover::after { width: 100%; transform: scaleY(1.5); }
         
-        .footer-section p { color: #b0b0b0; line-height: 1.8; font-size: 0.95rem; }
+        .footer-section h3:hover { color: #00bfff; transform: translateZ(10px) scale(1.05); text-shadow: 0 4px 15px rgba(0, 191, 255, 0.4); }
+        
+        @keyframes pulse3D { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.2); opacity: 1; } }
+        
+        .footer-section p { color: #b0b0b0; line-height: 1.8; font-size: 0.95rem; transition: all 0.4s ease; position: relative; }
+        
+        .footer-section:hover p { color: #d0d0d0; transform: translateX(5px); }
+        
+        .footer-section p::first-letter { color: #87ceeb; font-size: 1.2em; font-weight: 600; }
         
         .quick-links { display: flex; flex-direction: column; gap: 0.8rem; }
         
-        .quick-links a { color: #b0b0b0; text-decoration: none; transition: all 0.3s ease; display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; }
+        .quick-links a { color: #b0b0b0; text-decoration: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); display: inline-flex; align-items: center; gap: 0.5rem; font-size: 0.95rem; position: relative; padding: 0.5rem 0; opacity: 0; animation: slideInLink 0.5s ease forwards; }
         
-        .quick-links a::before { content: '→'; color: #87ceeb; transition: transform 0.3s ease; }
+        .quick-links a:nth-child(1) { animation-delay: 0.4s; }
+        .quick-links a:nth-child(2) { animation-delay: 0.5s; }
+        .quick-links a:nth-child(3) { animation-delay: 0.6s; }
+        .quick-links a:nth-child(4) { animation-delay: 0.7s; }
         
-        .quick-links a:hover { color: #87ceeb; transform: translateX(5px); }
+        @keyframes slideInLink { from { opacity: 0; transform: translateX(-20px); } to { opacity: 1; transform: translateX(0); } }
         
-        .quick-links a:hover::before { transform: translateX(5px); }
+        .quick-links a::before { content: '→'; color: #87ceeb; transition: all 0.4s ease; animation: arrowBounce 2s ease-in-out infinite; }
+        
+        @keyframes arrowBounce { 0%, 100% { transform: translateX(0); } 50% { transform: translateX(5px); } }
+        
+        .quick-links a::after { content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px; background: linear-gradient(90deg, #87ceeb, #00bfff); transition: width 0.4s ease; }
+        
+        .quick-links a:hover { color: #87ceeb; transform: translateX(10px) scale(1.05); text-shadow: 0 1px 5px rgba(135, 206, 250, 0.3); }
+        
+        .quick-links a:hover::before { transform: translateX(10px) scale(1.3); animation: none; }
+        
+        .quick-links a:hover::after { width: 100%; }
         
         .contact-info { display: flex; flex-direction: column; gap: 1.5rem; }
         
-        .contact-person { background: rgba(135, 206, 250, 0.05); padding: 1.2rem; border-radius: 12px; border: 1px solid rgba(135, 206, 250, 0.1); transition: all 0.3s ease; }
+        .contact-person { background: rgba(135, 206, 250, 0.05); padding: 1.2rem; border-radius: 12px; border: 1px solid rgba(135, 206, 250, 0.1); transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275); position: relative; overflow: hidden; animation: cardFloat 4s ease-in-out infinite; }
         
-        .contact-person:hover { background: rgba(135, 206, 250, 0.15); border-color: rgba(135, 206, 250, 0.5); transform: translateY(-5px) scale(1.02); box-shadow: 0 10px 30px rgba(135, 206, 250, 0.3); }
+        .contact-person:nth-child(1) { animation-delay: 0s; }
+        .contact-person:nth-child(2) { animation-delay: 0.5s; }
         
-        .contact-person strong { color: #87ceeb; font-size: 1.1rem; display: block; margin-bottom: 0.8rem; }
+        @keyframes cardFloat { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }
         
-        .contact-person a { color: #b0b0b0; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; margin: 0.5rem 0; transition: color 0.3s ease; font-size: 0.9rem; }
+        .contact-person::before { content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(135, 206, 250, 0.2), transparent); transition: left 0.6s ease; }
         
-        .contact-person a:hover { color: #87ceeb; }
+        .contact-person:hover { background: rgba(135, 206, 250, 0.15); border-color: rgba(135, 206, 250, 0.5); transform: translateY(-10px) scale(1.05); animation: none; }
+        
+        .contact-person:hover::before { left: 100%; }
+        
+        .contact-person strong { color: #87ceeb; font-size: 1.1rem; display: block; margin-bottom: 0.8rem; transition: all 0.3s ease; position: relative; }
+        
+        .contact-person:hover strong { color: #00bfff; transform: scale(1.05); text-shadow: 0 1px 8px rgba(0, 191, 255, 0.3); }
+        
+        .contact-person a { color: #b0b0b0; text-decoration: none; display: flex; align-items: center; gap: 0.5rem; margin: 0.5rem 0; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); font-size: 0.9rem; position: relative; padding-left: 0; }
+        
+        .contact-person a:hover { color: #87ceeb; padding-left: 10px; transform: scale(1.02); text-shadow: 0 1px 5px rgba(135, 206, 250, 0.2); }
+        
+        .contact-person a:hover::before { transform: scale(1.3) rotate(360deg); }
         
         .contact-person a::before { content: '📧'; }
         
@@ -487,19 +539,38 @@
         
         .social-links { display: flex; gap: 1rem; margin-top: 1rem; }
         
-        .social-icon { width: 40px; height: 40px; border-radius: 50%; background: rgba(135, 206, 250, 0.1); border: 1px solid rgba(135, 206, 250, 0.3); display: flex; align-items: center; justify-content: center; color: #87ceeb; text-decoration: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); font-size: 1.2rem; cursor: pointer; position: relative; overflow: hidden; }
+        .social-icon { width: 40px; height: 40px; border-radius: 50%; background: rgba(135, 206, 250, 0.1); border: 1px solid rgba(135, 206, 250, 0.3); display: flex; align-items: center; justify-content: center; color: #87ceeb; text-decoration: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); font-size: 1.2rem; cursor: pointer; position: relative; overflow: hidden; animation: socialBounce 3s ease-in-out infinite; }
+        
+        .social-icon:nth-child(1) { animation-delay: 0s; }
+        .social-icon:nth-child(2) { animation-delay: 0.2s; }
+        .social-icon:nth-child(3) { animation-delay: 0.4s; }
+        .social-icon:nth-child(4) { animation-delay: 0.6s; }
+        
+        @keyframes socialBounce { 0%, 100% { transform: translateY(0) scale(1); } 50% { transform: translateY(-5px) scale(1.05); } }
         
         .social-icon::before { content: ''; position: absolute; width: 100%; height: 100%; background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%); transform: scale(0); transition: transform 0.4s ease; border-radius: 50%; }
         
-        .social-icon:hover { background: linear-gradient(135deg, #87ceeb, #00bfff); color: #0a0e27; transform: translateY(-5px) rotate(360deg) scale(1.2); box-shadow: 0 8px 25px rgba(135, 206, 250, 0.6); border-color: #00bfff; }
+        .social-icon::after { content: ''; position: absolute; inset: -3px; border: 2px solid transparent; border-radius: 50%; background: linear-gradient(45deg, #87ceeb, #00bfff, #4169e1) border-box; -webkit-mask: linear-gradient(#fff 0 0) padding-box, linear-gradient(#fff 0 0); -webkit-mask-composite: xor; mask-composite: exclude; opacity: 0; transition: opacity 0.4s ease; animation: rotateBorder 2s linear infinite; }
         
-        .social-icon:hover::before { transform: scale(1); }
+        @keyframes rotateBorder { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
-        .social-icon:active { transform: translateY(-2px) rotate(360deg) scale(1.1); }
+        .social-icon:hover { background: linear-gradient(135deg, #87ceeb, #00bfff); color: #0a0e27; transform: translateY(-10px) rotate(360deg) scale(1.3); border-color: #00bfff; animation: none; }
         
-        .footer-bottom { text-align: center; padding-top: 2rem; border-top: 1px solid rgba(135, 206, 250, 0.2); color: #b0b0b0; font-size: 0.9rem; }
+        .social-icon:hover::before { transform: scale(1.5); }
         
-        .footer-bottom p { margin: 0.5rem 0; }
+        .social-icon:hover::after { opacity: 1; }
+        
+        .social-icon:active { transform: translateY(-5px) rotate(360deg) scale(1.2); }
+        
+        .footer-bottom { text-align: center; padding-top: 2rem; border-top: 1px solid rgba(135, 206, 250, 0.2); color: #b0b0b0; font-size: 0.9rem; position: relative; }
+        
+        .footer-bottom::before { content: ''; position: absolute; top: -1px; left: 0; width: 0; height: 1px; background: linear-gradient(90deg, #87ceeb, #00bfff, #4169e1); animation: borderExpand 3s ease-in-out infinite; }
+        
+        @keyframes borderExpand { 0%, 100% { width: 0; left: 0; } 50% { width: 100%; left: 0; } }
+        
+        .footer-bottom p { margin: 0.5rem 0; transition: all 0.3s ease; }
+        
+        .footer-bottom:hover p { color: #87ceeb; transform: scale(1.02); text-shadow: 0 1px 5px rgba(135, 206, 250, 0.2); }
         
         .back-to-top { position: fixed; bottom: 2rem; right: 2rem; width: 50px; height: 50px; background: linear-gradient(135deg, #87ceeb, #00bfff); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #0a0e27; font-size: 1.5rem; cursor: pointer; opacity: 0; pointer-events: none; transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 1000; box-shadow: 0 5px 20px rgba(135, 206, 250, 0.4); border: 2px solid transparent; }
         
@@ -727,21 +798,21 @@
                 <div class="project-icon">🛒</div>
                 <h3>Amazon Clone</h3>
                 <p>Fully functional e-commerce clone with product listings, shopping cart, checkout system, and responsive design.</p>
-                <div class="project-tags"><a href="https://github.com/Mahnoor-Akhtar/Amazon-clone" class="project-link" target="_blank">View Project</a></div>
+                <div class="project-tags"><a href="https://mahnoor-akhtar.github.io/Amazon-Clone/" class="project-link" target="_blank">View Project</a></div>
             </div>
 
             <div class="project-card">
                 <div class="project-icon">🔄</div>
                 <h3>NFA to DFA Craft</h3>
                 <p>Interactive automata converter tool for formal languages with real-time visualization and step-by-step conversion process.</p>
-                <div class="project-tags"><a href="https://github.com/haris8498/nfa-to-dfa-craft" class="project-link" target="_blank">View Project</a></div>
+                <div class="project-tags"><a href="https://lovable.dev/projects/5cb5f64f-c381-4ddc-b9dd-39a0dcc4d13d?permissionView=main" class="project-link" target="_blank">View Project</a></div>
             </div>
 
             <div class="project-card">
                 <div class="project-icon">🌟</div>
                 <h3>Axentra Luminous</h3>
                 <p>Modern and elegant homepage design with stunning GSAP animations and professional UI/UX principles.</p>
-                <div class="project-tags"><a href="https://github.com/haris8498/axentra-luminous-homepage" class="project-link" target="_blank">View Project</a></div>
+                <div class="project-tags"><a href="https://lovable.dev/projects/fd9d99d3-ae26-4a75-98e5-9f99fe770d17?permissionView=main" class="project-link" target="_blank">View Project</a></div>
             </div>
 
             <div class="project-card">
@@ -755,7 +826,7 @@
                 <div class="project-icon">🤖</div>
                 <h3>AI Intelligence Suite</h3>
                 <p>Advanced AI application featuring machine learning algorithms, neural network implementation, and intelligent data processing.</p>
-                <div class="project-tags"><a href="#" class="project-link">View Project</a></div>
+                <div class="project-tags"><a href="https://github.com/code50/216858285" class="project-link">View Project</a></div>
             </div>
 
             <div class="project-card">
@@ -763,6 +834,41 @@
                 <h3>Mini Projects Collection</h3>
                 <p>Diverse collection of web applications including Tic-Tac-Toe, Base Converter, QR Decoder, Speed Checker, and 3D Planetarium.</p>
                 <div class="project-tags"><a href="https://app.netlify.com/teams/mahnoor-akhtar/projects" class="project-link" target="_blank">View Projects</a></div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-icon">🎬</div>
+                <h3>Netflix</h3>
+                <p>Streaming platform clone featuring dynamic content browsing, responsive design, video previews, and an immersive user interface inspired by Netflix.</p>
+                <div class="project-tags"><a href="https://mahnoor-akhtar.github.io/Netlify-Clone/" class="project-link" target="_blank">View Project</a></div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-icon">🤖</div>
+                <h3>RoboSport</h3>
+                <p>Interactive robotics and sports technology platform featuring real-time tracking, AI-powered analytics, and dynamic competition management.</p>
+                <div class="project-tags"><a href="https://robosports.biz/" class="project-link">View Project</a></div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-icon">💼</div>
+                <h3>Software House Landing Page</h3>
+                <p>Professional landing page design for software development agency with modern aesthetics, smooth animations, and conversion-optimized layout.</p>
+                <div class="project-tags"><a href="https://haris8498.github.io/Software-House-Landing-page-/" class="project-link">View Project</a></div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-icon">🌌</div>
+                <h3>Planetarium-3D</h3>
+                <p>Immersive 3D planetarium experience with interactive celestial navigation, real-time star mapping, and stunning visual effects using WebGL.</p>
+                <div class="project-tags"><a href="https://github.com/Mahnoor-Akhtar/Planetarium-3d" class="project-link">View Project</a></div>
+            </div>
+
+            <div class="project-card">
+                <div class="project-icon">🎮</div>
+                <h3>Web Games</h3>
+                <p>Engaging browser-based game with smooth animations, responsive controls, leaderboard system, and immersive gameplay experience.</p>
+                <div class="project-tags"><a href="https://app.netlify.com/teams/mahnoor-akhtar/projects" class="project-link">View Project</a></div>
             </div>
         </div>
     </section>
@@ -879,3 +985,8 @@
     </script>
 </body>
 </html>
+
+
+
+
+
